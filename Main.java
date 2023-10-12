@@ -20,19 +20,14 @@ public class Main {
         printList(orders);
 
         System.out.println("************* 1 *****************");
+
         Map<Customer , List<Order> > ordineperCustumer = orders.stream().collect(Collectors.groupingBy(Order::getCustomer));
-ordineperCustumer.forEach((customer , ordini) -> System.out.println("Custumer: " + customer + " Ordini: " + ordini));
+ordineperCustumer.forEach((customer , ordini) -> System.out.println("Custumer: " + customer.getName() + " Ordini: " + ordini));
 
         System.out.println("************* 2 *****************");
-//    Map<Customer, Integer> totSpesaperCliente = orders.stream().collect(Collectors.groupingBy(Order::getCustomer, Collectors.summingInt(Order::getProducts)));
+    Map<Customer, Double> totSpesaperCliente = orders.stream().collect(Collectors.groupingBy(Order::getCustomer, Collectors.summingDouble(order -> order.getProducts().stream().mapToDouble(Product::getPrice).sum())));
 
-        orders.forEach( order -> {
-            List<Product> orderProducts = order.getProducts();
-            Customer temp = order.getCustomer();
-            double tot = orderProducts.stream().mapToDouble(Product::getPrice).sum();
-            System.out.println("Custumer: " + temp.getName() + " Totale: " + tot);
-        });
-
+    totSpesaperCliente.forEach((custumer, tot )-> System.out.println("Customer: " + custumer.getName() + " Total: " + tot));
 
         System.out.println("************* 3 *****************");
      List<Product> prodottiPiuCostosi = warehouse.stream().sorted(Comparator.comparing(Product::getPrice ,Comparator.reverseOrder()) ).limit(3).toList();
